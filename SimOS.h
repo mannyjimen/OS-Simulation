@@ -25,24 +25,13 @@ struct MemoryItem
     int PID; //PID of process using this chunk of memory
 };
 
-struct PCB{
-    int PID;
-    int priority;
-    std::vector<Process> children;
-    int exitStatus;
-    unsigned long long processAddress;
-};
-
-struct Process{
-    PCB control;
-    unsigned long long size;
-};
-
 using MemoryUse = std::vector<MemoryItem>;
 
 constexpr int NO_PROCESS{-1};
 
 class SimOS{
+
+    public:
     SimOS(int numberOfDisks, unsigned long long amountOfRAM,
     unsigned long long sizeOfOS);
     bool NewProcess(unsigned long long size, int priority);
@@ -57,9 +46,12 @@ class SimOS{
     FileReadRequest GetDisk(int diskNumber);
     std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
 
+    private:
     Processor processor_;
     std::unordered_map<int, std::queue<Process>> disks_;
     RandomAccessMemory memory_;
+
+    int PIDCounter;
     
 };  
 

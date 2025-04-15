@@ -3,5 +3,5 @@
 
 int main()
 {
-    std::cout << "Hello, World!\n";
+    SimOS mainOS(5, 1'000'000, 5'000'000);
 }  
