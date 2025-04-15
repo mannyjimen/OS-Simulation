@@ -6,6 +6,11 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <unordered_map>
+
+#include "Processor.h"
+#include "RandomAccessMemory.h"
+#include "Disk.h"
 
 struct FileReadRequest
 {
@@ -18,6 +23,19 @@ struct MemoryItem
     unsigned long long itemAddress;
     unsigned long long itemSize;
     int PID; //PID of process using this chunk of memory
+};
+
+struct PCB{
+    int PID;
+    int priority;
+    std::vector<Process> children;
+    int exitStatus;
+    unsigned long long processAddress;
+};
+
+struct Process{
+    PCB control;
+    unsigned long long size;
 };
 
 using MemoryUse = std::vector<MemoryItem>;
@@ -38,7 +56,11 @@ class SimOS{
     MemoryUse GetMemory();
     FileReadRequest GetDisk(int diskNumber);
     std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
+
+    Processor processor_;
+    std::unordered_map<int, std::queue<Process>> disks_;
+    RandomAccessMemory memory_;
     
-};
+};  
 
 #endif //_SIM_OS_
