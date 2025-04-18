@@ -13,6 +13,11 @@ bool SimOS::NewProcess(unsigned long long size, int priority){
     return processor_.addProcess(temp);
 }
 
+bool SimOS::SimFork(){
+    Process fork = processor_.getCurrentProcess();
+    return NewProcess(fork.size_, fork.control_.priority_);
+}
+
 int SimOS::GetCPU(){
     return processor_.getCurrentProcess().control_.PID_;
 }
