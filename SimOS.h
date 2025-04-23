@@ -47,11 +47,9 @@ class SimOS{
     std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
 
     private:
-    Processor processor_;
-    std::unordered_map<int, std::queue<Process>> disks_;
+    ProcessManagement process_;
+    std::unordered_map<int, std::queue<int>> disks_;
     RandomAccessMemory memory_;
-
-    int PIDCounter;
     
 };  
 

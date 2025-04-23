@@ -6,22 +6,23 @@ SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM,
     unsigned long long sizeOfOS){
 
 }
-
 //SimOS Member Functions
 bool SimOS::NewProcess(unsigned long long size, int priority){
-    Process temp(size, priority, ++PIDCounter);
-    return processor_.addProcess(temp);
+    int newPID = process_.getNextPID();
+    PCB temp(size, priority, newPID);
+    return process_.addProcess(newPID, temp);
 }
 
 bool SimOS::SimFork(){
-    Process fork = processor_.getCurrentProcess();
-    return NewProcess(fork.size_, fork.control_.priority_);
+    PCB fork = process_.getPCB(process_.getCurrentProcess());
+    //when forking these are the only two pieces of data we care about (I THINK)
+    return NewProcess(fork.size_, fork.priority_);
 }
 
 int SimOS::GetCPU(){
-    return processor_.getCurrentProcess().control_.PID_;
+    return process_.getCurrentProcess();
 }
 
 std::vector<int> SimOS::GetReadyQueue(){
-    return processor_.fetchReadyQueue();
+    return process_.fetchReadyQueue();
 }

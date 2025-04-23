@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <queue>
+#include <unordered_map>
 
 enum class State{
     NEW,
@@ -17,41 +18,44 @@ struct PCB{
     int priority_;
     //children specified by PID
     std::vector<int> children_ = std::vector<int>();
-    int exitStatus_;
+    int exitStatus_ = -1;
     unsigned long long processAddress_;
+    unsigned long long size_;
     State state_;
 
     PCB();
-};
-
-struct Process{
-    PCB control_;
-    unsigned long long size_;
-
-    Process();
-    Process(unsigned long long size, int priority, int PID);
+    PCB(int PID, int priority, unsigned long long size);
 };
 
 /// custom function object to compare process priority (for readyQueue)
-struct priorityCompare
-{
-    bool operator()(const Process& a, const Process& b);
-};
+//COMPARING PRIO of two PIDS 
 
-class Processor{
+class ProcessManagement{
     public:
+    //compare function for readyQueue
+    struct priorityCompare
+    {
+        bool operator()(const std::pair<int,int>& a, const std::pair<int,int>& b);
+    };
     //default constructor
-    Processor();
+    ProcessManagement();
     //for SimOS getCPU
-    Process getCurrentProcess();
+    int getCurrentProcess();
     //for SimOS GetReadyQueue
     std::vector<int> fetchReadyQueue();
     //adding process to readyQueue
-    bool addProcess(const Process& process);
+    int getNextPID();
+    PCB getPCB(int PID);
+    
+    bool addProcess(int newPID, PCB newPCB);
+
 
     private:
-    Process currentProcess;
-    std::priority_queue<Process, std::vector<Process>, priorityCompare> readyQueue;
+
+    int currentProcess;
+    int PIDCounter = 0;
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, priorityCompare> readyQueue;
+    std::unordered_map<int, PCB> processMap;
 };
 
 #endif //_PROCESSOR_

@@ -6,46 +6,47 @@ PCB::PCB(){
     exitStatus_ = -1;
 }
 
-//Process Constructors
-Process::Process(){
-
+PCB::PCB(int PID, int priority, unsigned long long size){
+    
 }
-Process::Process(unsigned long long size, int priority, int PID){
-    control_.PID_ = PID;
-    control_.priority_ = priority;
-    size_ = size;
+
+ProcessManagement::ProcessManagement(){
 }
 
 //scheduling priority comparison function
-bool priorityCompare::operator()(const Process& a, const Process& b)
+bool ProcessManagement::priorityCompare::operator()(
+    const std::pair<int,int>& a, 
+    const std::pair<int,int>& b)
 {
-        return a.control_.priority_ < b.control_.priority_;
-}
-
-//Processor Default Constructor
-Processor::Processor(){
-
+    return a.second > b.second;
 }
 
 //MEMBER FUNCTION IMPLEMENTATIONS
-Process Processor::getCurrentProcess(){
+int ProcessManagement::getCurrentProcess(){
     return currentProcess;
 }
 
-std::vector<int> Processor::fetchReadyQueue(){
-    std::priority_queue<Process, std::vector<Process>, priorityCompare> reQueue;
-    std::vector<int> final;
-    while (!readyQueue.empty()){
-        final.push_back(readyQueue.top().control_.PID_);
-        reQueue.push(readyQueue.top());
-        readyQueue.pop();
-    }
-    readyQueue = reQueue;
-    return final;
+PCB ProcessManagement::getPCB(int PID){
+    return processMap[PID];
 }
 
-bool Processor::addProcess(const Process& process){
-    readyQueue.push(process);
+std::vector<int> ProcessManagement::fetchReadyQueue(){
+    auto temp = readyQueue;
+    std::vector<int> finalreadyQueue;
+    while (!temp.empty()){
+        finalreadyQueue.push_back(temp.top().first);
+        temp.pop();
+    }
+    return finalreadyQueue;
+}
+
+int ProcessManagement::getNextPID(){
+    return ++PIDCounter;
+}
+
+bool ProcessManagement::addProcess(int newPID, PCB newPCB){
+    processMap[newPID] = newPCB;
+    readyQueue.push({newPID, newPCB.priority_});
     //not sure in what case would return false
     return true;
 }
