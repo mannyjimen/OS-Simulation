@@ -7,18 +7,31 @@ PCB::PCB(){
 }
 
 PCB::PCB(int PID, int priority, unsigned long long size){
-    
+    PID_ = PID;
+    priority_ = priority;
+    size_ = size;
 }
 
 ProcessManagement::ProcessManagement(){
+    PCB temp(getNextPID(), 0, -1);
+    addProcess(temp.PID_, temp);
+    refreshCurrent();
+}
+
+void ProcessManagement::setSizeOS(unsigned long long sizeOfOS){
+    processMap[1].size_ = sizeOfOS;
+}
+
+void ProcessManagement::refreshCurrent(){
+    currentProcess = readyQueue.top().first;
 }
 
 //scheduling priority comparison function
 bool ProcessManagement::priorityCompare::operator()(
-    const std::pair<int,int>& a, 
-    const std::pair<int,int>& b)
+    const std::pair<int,int>& lhs, 
+    const std::pair<int,int>& rhs)
 {
-    return a.second > b.second;
+    return rhs.second > lhs.second;
 }
 
 //MEMBER FUNCTION IMPLEMENTATIONS
@@ -32,10 +45,12 @@ PCB ProcessManagement::getPCB(int PID){
 
 std::vector<int> ProcessManagement::fetchReadyQueue(){
     auto temp = readyQueue;
-    std::vector<int> finalreadyQueue;
-    while (!temp.empty()){
-        finalreadyQueue.push_back(temp.top().first);
+    std::vector<int> finalreadyQueue(temp.size());
+    int i = 0;
+    while(!temp.empty()){
+        finalreadyQueue[i] = temp.top().first;
         temp.pop();
+        i++;
     }
     return finalreadyQueue;
 }
@@ -44,9 +59,20 @@ int ProcessManagement::getNextPID(){
     return ++PIDCounter;
 }
 
+void ProcessManagement::addChild(int parent, int child){
+    processMap[parent].children_.push_back(child);
+}
+
 bool ProcessManagement::addProcess(int newPID, PCB newPCB){
     processMap[newPID] = newPCB;
     readyQueue.push({newPID, newPCB.priority_});
+    refreshCurrent();
     //not sure in what case would return false
     return true;
+}
+
+void ProcessManagement::exitProcess(){
+    processMap[currentProcess].state_ = State::TERMINATED;
+    readyQueue.pop();
+    refreshCurrent();
 }

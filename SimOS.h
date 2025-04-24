@@ -3,6 +3,7 @@
 #ifndef _SIM_OS_
 #define _SIM_OS_
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <queue>
@@ -38,17 +39,20 @@ class SimOS{
     bool SimFork();
     void SimExit();
     void SimWait();
-    void DiskReadRequest(int diskNumber, std::string fileName);
-    void DiskJobCompleted(int diskNumber);
+    //void DiskReadRequest(int diskNumber, std::string fileName);
+    //void DiskJobCompleted(int diskNumber);
     int GetCPU();
     std::vector<int> GetReadyQueue();
-    MemoryUse GetMemory();
-    FileReadRequest GetDisk(int diskNumber);
-    std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
+    //MemoryUse GetMemory();
+    //FileReadRequest GetDisk(int diskNumber);
+    //std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
+
+    //helper function
+    void printReadyQueue();
 
     private:
     ProcessManagement process_;
-    std::unordered_map<int, std::queue<int>> disks_;
+    //std::unordered_map<int, std::queue<int>> disks_;
     RandomAccessMemory memory_;
     
 };  

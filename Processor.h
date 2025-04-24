@@ -35,10 +35,12 @@ class ProcessManagement{
     //compare function for readyQueue
     struct priorityCompare
     {
-        bool operator()(const std::pair<int,int>& a, const std::pair<int,int>& b);
+        bool operator()(const std::pair<int,int>& lhs, const std::pair<int,int>& rhs);
     };
     //default constructor
     ProcessManagement();
+    void setSizeOS(unsigned long long sizeOfOS);
+    void refreshCurrent();
     //for SimOS getCPU
     int getCurrentProcess();
     //for SimOS GetReadyQueue
@@ -46,8 +48,10 @@ class ProcessManagement{
     //adding process to readyQueue
     int getNextPID();
     PCB getPCB(int PID);
-    
+    void addChild(int parent, int child);
+
     bool addProcess(int newPID, PCB newPCB);
+    void exitProcess();
 
 
     private:
