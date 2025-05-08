@@ -9,19 +9,24 @@ SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM,
 //SimOS Member Functions
 bool SimOS::NewProcess(unsigned long long size, int priority){
     int newPID = process_.getNextPID();
-    PCB temp(size, priority, newPID);
+    PCB temp(newPID, priority, size);
     return process_.addProcess(newPID, temp);
 }
 
 bool SimOS::SimFork(){
-    PCB fork = process_.getPCB(process_.getCurrentProcess());
+    PCB fork = process_.getPCB(process_.getCurrentProcess()); 
     int newPID = process_.getNextPID();
+    process_.addProcess(newPID, fork);
     process_.addChild(process_.getCurrentProcess(), newPID);
-    return process_.addProcess(newPID, fork);
+    return true;
 }
 
 void SimOS::SimExit(){
     process_.exitProcess();
+}
+
+void SimOS::SimWait(){
+    process_.waitParent();
 }
 
 int SimOS::GetCPU(){

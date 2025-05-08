@@ -4,6 +4,9 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
+
+#include <iostream>
 
 enum class State{
     NEW,
@@ -17,7 +20,8 @@ struct PCB{
     int PID_;
     int priority_;
     //children specified by PID
-    std::vector<int> children_ = std::vector<int>();
+    std::unordered_set<int> children_;
+    int parent_ = -1;
     int exitStatus_ = -1;
     unsigned long long processAddress_;
     unsigned long long size_;
@@ -50,8 +54,14 @@ class ProcessManagement{
     PCB getPCB(int PID);
     void addChild(int parent, int child);
 
+    //SimWait function
+    bool waitParent();
+    void parentUnwait(int childPID, int parentPID);
+
     bool addProcess(int newPID, PCB newPCB);
     void exitProcess();
+
+    bool checkForWaitingParent(int childPID);
 
 
     private:
