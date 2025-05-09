@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 #include "Processor.h"
-#include "RandomAccessMemory.h"
+#include "MemoryManagement.h"
 #include "Disk.h"
 
 struct FileReadRequest
@@ -53,7 +53,8 @@ class SimOS{
     private:
     ProcessManagement process_;
     //std::unordered_map<int, std::queue<int>> disks_;
-    RandomAccessMemory memory_;
+    MemoryManagement memory_;
+    MemoryUse allMemItems_;
     
 };  
 

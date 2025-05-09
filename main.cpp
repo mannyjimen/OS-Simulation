@@ -26,5 +26,6 @@ int main()
     mainOS.NewProcess(2'000, 6); // PID 4
     mainOS.NewProcess(2'000, 2); // PID 5
 
-    testForkAndWait(mainOS);
+    // testForkAndWait(mainOS);
+    
 }
