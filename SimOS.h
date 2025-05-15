@@ -43,12 +43,15 @@ class SimOS{
     //void DiskJobCompleted(int diskNumber);
     int GetCPU();
     std::vector<int> GetReadyQueue();
-    //MemoryUse GetMemory();
+    MemoryUse GetMemory();
     //FileReadRequest GetDisk(int diskNumber);
     //std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
 
-    //helper function
+    //helper functions
     void printReadyQueue();
+    void printMemoryLayout();
+    void printMemoryHoles();
+
 
     private:
     ProcessManagement process_;

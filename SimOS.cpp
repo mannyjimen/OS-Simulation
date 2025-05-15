@@ -4,10 +4,9 @@
 //SimOS constructor
 SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM,
     unsigned long long sizeOfOS){
-    
-    memory_.setSizeRAM(amountOfRAM);
-    allMemItems_.push_back({memory_.insertProcessMemory(sizeOfOS, 1), sizeOfOS, 1}); //OS memory item
 
+    memory_.setSizeRAM(amountOfRAM);
+    NewProcess(sizeOfOS, 0);
     process_.setSizeOS(sizeOfOS);
 }
 //SimOS Member Functions
@@ -50,9 +49,35 @@ std::vector<int> SimOS::GetReadyQueue(){
     return process_.fetchReadyQueue();
 }
 
+MemoryUse SimOS::GetMemory(){
+    MemoryUse final;
+    std::vector<processItem> temp = memory_.fetchMemoryLayout();
+    for(processItem currItem: temp){
+        final.push_back({currItem.startAddress_, currItem.endAddress_ - currItem.startAddress_, currItem.PID_});
+    }
+    return final;
+}
+
 void SimOS::printReadyQueue(){
     std::vector<int> currReadyQueue = GetReadyQueue();
     for (int PID: currReadyQueue)
         std::cout << PID << " - ";
     std::cout << std::endl;
+}
+
+void SimOS::printMemoryLayout(){
+    std::cout << "All Current Memory Items:\n";
+    MemoryUse currMemoryLayout = GetMemory();
+    for(MemoryItem currItem: currMemoryLayout){
+        std::cout << currItem.itemAddress << " --- " << currItem.itemAddress + currItem.itemSize << " | PID: " << currItem.PID;
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void SimOS::printMemoryHoles(){
+    std::cout << "All Current Memory Holes:\n";
+    std::vector<std::pair<unsigned long long, unsigned long long>> currMemHoles = memory_.fetchMemoryHoles();
+    for(std::pair<unsigned long long, unsigned long long> currentHole: currMemHoles)
+        std::cout << currentHole.first << " --- " << currentHole.second << std::endl;
 }
