@@ -34,14 +34,11 @@ unsigned long long MemoryManagement::insertProcessMemory(unsigned long long pSiz
     }
     if (newProcess.startAddress_ != memorySize_){ //found a spot
         newProcess.endAddress_ = newProcess.startAddress_ + pSize;
-        insertRange(newProcess);
-        //adding element to back messes up order.
+        insertRange(newProcess); //adding element to back messes up order.
         sortProcessRanges();
         refreshHoles();
     }
     return newProcess.startAddress_; //returns size of memory if no place was found
-    // insertRange({1, 1, 1});
-    // return 1;
 }
 
 bool MemoryManagement::removeProcessMemory(int PID){
@@ -61,14 +58,25 @@ void MemoryManagement::insertRange(processItem newProcess){
 
 void MemoryManagement::sortProcessRanges(){
     //nice little insertion sort implementation
+    // std::cout << "Pre-Sort\n";
+    // for(auto it = processRanges_.begin(); it != processRanges_.end(); it++)
+    //     std::cout << it->startAddress_ << " ";
+    // std::cout << std::endl;
+    
     for(std::vector<processItem>::iterator it = processRanges_.begin() + 1; it != processRanges_.end(); it++){
         for(std::vector<processItem>::iterator it2 = it - 1; it2 >= processRanges_.begin(); it2--){
             if(it2->startAddress_ > it->startAddress_){
                 std::iter_swap(it2, it);
-                return;
+                auto itTemp = it;
+                it = it2;
+                it2 = itTemp;
             }
         }
     }
+    // std::cout << "Post-Sort\n";
+    // for(auto it = processRanges_.begin(); it != processRanges_.end(); it++)
+    //     std::cout << it->startAddress_ << " ";
+    // std::cout << std::endl;
 }
 
 void MemoryManagement::refreshHoles(){
