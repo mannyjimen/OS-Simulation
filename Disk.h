@@ -1,8 +1,25 @@
 #ifndef _DISK_
 #define _DISK_
 
-class Disk{
-    
+#include <vector>
+
+struct FileReadRequest
+{
+    int  PID{0};
+    std::string fileName{""};
 };
+
+class Disks{
+    public:
+    void setDiskCount(int numDisks);
+    void insertJob(int diskNum, FileReadRequest request);
+    void finishJob(int diskNum);
+    FileReadRequest getCurrentJob(int diskNum);
+
+    private:
+    int diskCount_;
+    std::vector<std::vector<FileReadRequest>> diskJobArray;
+    
+};  
 
 #endif //_DISK__
