@@ -20,12 +20,19 @@ void testForkAndWait(SimOS& mainOS){
 
 int main()
 {
-    SimOS mainOS(5, 1'000'000, 5'000'000); // PID 1
-    mainOS.NewProcess(1'000'000, 2); //PID 2
-    mainOS.NewProcess(2'000, 1); // PID 3
-    mainOS.NewProcess(2'000, 6); // PID 4
-    mainOS.NewProcess(2'000, 2); // PID 5
+    SimOS mainOS(5, 5'000'000, 1'000'000); // PID 1
+    mainOS.NewProcess(1'000'000, 4); //PID 2
+    mainOS.NewProcess(1'000'000, 5); //PID 3
+    mainOS.NewProcess(1'000'000, 3); //PID 4
+    mainOS.NewProcess(500'000, 2); //PID 5
+    mainOS.NewProcess(1'000'000, 1); // no space
+    mainOS.NewProcess(1'000, 4); // PID 6
+    mainOS.SimExit();
+    mainOS.NewProcess(1'000, 4);
 
+    // mainOS.printReadyQueue();
+    mainOS.printMemoryLayout();
+    mainOS.printMemoryHoles();
     // testForkAndWait(mainOS);
     
 }

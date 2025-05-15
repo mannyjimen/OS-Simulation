@@ -24,6 +24,7 @@ class MemoryManagement{
 
     std::vector<processItem> fetchMemoryLayout();
     std::vector<std::pair<unsigned long long, unsigned long long>> fetchMemoryHoles();
+    unsigned long long getMemorySize();
 
     private:
     std::vector<processItem> processRanges_;

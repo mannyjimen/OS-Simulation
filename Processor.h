@@ -49,6 +49,8 @@ class ProcessManagement{
     std::vector<int> fetchReadyQueue();
     //adding process to readyQueue
     int getNextPID();
+    int seeNextPID();
+    
     PCB getPCB(int PID);
     void addChild(int parent, int child);
 

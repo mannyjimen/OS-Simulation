@@ -12,12 +12,12 @@ unsigned long long MemoryManagement::insertProcessMemory(unsigned long long pSiz
     newProcess.startAddress_ = memorySize_; //in case no hole is big enough
 
     if (pSize > memorySize_){
-        return memorySize_;
+        return memorySize_; //too big
     }
 
     else{
         unsigned long long optimalDifference = 0;
-        unsigned long long optimalStartAddress = memorySize_;
+        unsigned long long optimalStartAddress = memorySize_; //will remain if no hole found(too big)
 
         for(std::pair<unsigned long long, unsigned long long> hole: holeRanges_){
             unsigned long long sizeOfHole = hole.second - hole.first;
@@ -36,6 +36,7 @@ unsigned long long MemoryManagement::insertProcessMemory(unsigned long long pSiz
         newProcess.endAddress_ = newProcess.startAddress_ + pSize;
         insertRange(newProcess);
         //adding element to back messes up order.
+        sortProcessRanges();
         refreshHoles();
     }
     return newProcess.startAddress_; //returns size of memory if no place was found
@@ -47,7 +48,6 @@ bool MemoryManagement::removeProcessMemory(int PID){
     for(std::vector<processItem>::iterator it = processRanges_.begin(); it != processRanges_.end(); it++){
         if(it->PID_ == PID){
             processRanges_.erase(it);
-            sortProcessRanges(); //removing element doesn't mess up order
             refreshHoles();
             return true;
         }
@@ -61,6 +61,14 @@ void MemoryManagement::insertRange(processItem newProcess){
 
 void MemoryManagement::sortProcessRanges(){
     //nice little insertion sort implementation
+    for(std::vector<processItem>::iterator it = processRanges_.begin() + 1; it != processRanges_.end(); it++){
+        for(std::vector<processItem>::iterator it2 = it - 1; it2 >= processRanges_.begin(); it2--){
+            if(it2->startAddress_ > it->startAddress_){
+                std::iter_swap(it2, it);
+                return;
+            }
+        }
+    }
 }
 
 void MemoryManagement::refreshHoles(){
@@ -88,4 +96,8 @@ std::vector<processItem> MemoryManagement::fetchMemoryLayout(){
 //print holes helper function
 std::vector<std::pair<unsigned long long, unsigned long long>> MemoryManagement::fetchMemoryHoles(){
     return holeRanges_;
+}
+
+unsigned long long MemoryManagement::getMemorySize(){
+    return memorySize_;
 }

@@ -11,21 +11,30 @@ SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM,
 }
 //SimOS Member Functions
 bool SimOS::NewProcess(unsigned long long size, int priority){
+    unsigned long long newStartAddress = memory_.insertProcessMemory(size, process_.seeNextPID());
+    if (newStartAddress == memory_.getMemorySize()){
+        std::cout << "No space for process in memory." << std::endl;
+        return false;
+    }
     int newPID = process_.getNextPID();
     PCB temp(newPID, priority, size);
-    
-    allMemItems_.push_back({memory_.insertProcessMemory(size, newPID), size, newPID}); // new memory item
+    allMemItems_.push_back({newStartAddress, size, newPID}); // new memory item
 
     return process_.addProcess(newPID, temp);
 }
 
 bool SimOS::SimFork(){
     PCB fork = process_.getPCB(process_.getCurrentProcess()); 
+    unsigned long long newStartAddress = memory_.insertProcessMemory(fork.size_, process_.seeNextPID());
+    if (newStartAddress == memory_.getMemorySize()){
+        std::cout << "No space for process in memory." << std::endl;
+        return false;
+    }
     int newPID = process_.getNextPID();
     process_.addProcess(newPID, fork);
     process_.addChild(process_.getCurrentProcess(), newPID);
 
-    allMemItems_.push_back({memory_.insertProcessMemory(fork.size_, newPID), fork.size_, newPID}); //inserting forked mem item
+    allMemItems_.push_back({newStartAddress, fork.size_, newPID}); //inserting forked mem item
 
     return true;
 }

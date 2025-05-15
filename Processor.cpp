@@ -57,6 +57,10 @@ int ProcessManagement::getNextPID(){
     return ++PIDCounter;
 }
 
+int ProcessManagement::seeNextPID(){
+    return PIDCounter + 1;
+}
+
 void ProcessManagement::addChild(int parent, int child){
     processMap[parent].children_.insert(child);
     processMap[child].parent_ = parent;
