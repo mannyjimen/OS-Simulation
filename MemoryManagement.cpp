@@ -11,10 +11,10 @@ unsigned long long MemoryManagement::insertProcessMemory(unsigned long long pSiz
     newProcess.PID_ = PID;
     newProcess.startAddress_ = memorySize_; //in case no hole is big enough
 
-    if (holeRanges_.size() == 1){ //just created, OS should be put in
-        if(pSize > memorySize_) return memorySize_; 
-        newProcess.startAddress_ = 0;
+    if (pSize > memorySize_){
+        return memorySize_;
     }
+
     else{
         unsigned long long optimalDifference = 0;
         unsigned long long optimalStartAddress = memorySize_;
@@ -22,6 +22,7 @@ unsigned long long MemoryManagement::insertProcessMemory(unsigned long long pSiz
         for(std::pair<unsigned long long, unsigned long long> hole: holeRanges_){
             unsigned long long sizeOfHole = hole.second - hole.first;
             if(pSize > sizeOfHole) continue; //hole is too small for process.
+            
             unsigned long long difference = sizeOfHole - pSize;
             
             if(difference > optimalDifference){
@@ -31,22 +32,22 @@ unsigned long long MemoryManagement::insertProcessMemory(unsigned long long pSiz
         }
         newProcess.startAddress_ = optimalStartAddress;
     }
-
-    if(newProcess.startAddress_ != memorySize_){ //found a spot
+    if (newProcess.startAddress_ != memorySize_){ //found a spot
         newProcess.endAddress_ = newProcess.startAddress_ + pSize;
-        processRanges_.push_back(newProcess);
-
-        reOrganizeProcessRanges();
+        insertRange(newProcess);
+        //adding element to back messes up order.
         refreshHoles();
     }
     return newProcess.startAddress_; //returns size of memory if no place was found
+    // insertRange({1, 1, 1});
+    // return 1;
 }
 
 bool MemoryManagement::removeProcessMemory(int PID){
     for(std::vector<processItem>::iterator it = processRanges_.begin(); it != processRanges_.end(); it++){
         if(it->PID_ == PID){
             processRanges_.erase(it);
-            reOrganizeProcessRanges();
+            sortProcessRanges(); //removing element doesn't mess up order
             refreshHoles();
             return true;
         }
@@ -54,10 +55,37 @@ bool MemoryManagement::removeProcessMemory(int PID){
     return false;
 }
 
-void MemoryManagement::reOrganizeProcessRanges(){
+void MemoryManagement::insertRange(processItem newProcess){
+    processRanges_.push_back(newProcess);
+}
 
+void MemoryManagement::sortProcessRanges(){
+    //nice little insertion sort implementation
 }
 
 void MemoryManagement::refreshHoles(){
+    
+    holeRanges_.clear();
+    unsigned long long temp = 0;
+    for(int i = 0; i < processRanges_.size(); i++){
+        processItem currProcess = processRanges_[i];
+        if(temp >= currProcess.startAddress_ && temp <= currProcess.endAddress_){
+            temp = currProcess.endAddress_ + 1;
+            continue;
+        }
+        holeRanges_.push_back({temp, currProcess.startAddress_ - 1});
+        temp = currProcess.endAddress_ + 1;
+    }
+    if(temp < memorySize_)
+        holeRanges_.push_back({temp, memorySize_});
+}
 
+
+std::vector<processItem> MemoryManagement::fetchMemoryLayout(){
+    return processRanges_;
+}
+
+//print holes helper function
+std::vector<std::pair<unsigned long long, unsigned long long>> MemoryManagement::fetchMemoryHoles(){
+    return holeRanges_;
 }

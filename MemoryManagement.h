@@ -19,7 +19,11 @@ class MemoryManagement{
     bool removeProcessMemory(int PID);
 
     void refreshHoles();
-    void reOrganizeProcessRanges();
+    void sortProcessRanges();
+    void insertRange(processItem newProcess);
+
+    std::vector<processItem> fetchMemoryLayout();
+    std::vector<std::pair<unsigned long long, unsigned long long>> fetchMemoryHoles();
 
     private:
     std::vector<processItem> processRanges_;
