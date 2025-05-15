@@ -11,12 +11,6 @@ PCB::PCB(int PID, int priority, unsigned long long size){
     size_ = size;
 }
 
-ProcessManagement::ProcessManagement(){
-    PCB temp(getNextPID(), 0, -1);
-    addProcess(temp.PID_, temp);
-    refreshCurrent();
-}
-
 void ProcessManagement::setSizeOS(unsigned long long sizeOfOS){
     processMap[1].size_ = sizeOfOS;
 }

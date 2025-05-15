@@ -41,7 +41,6 @@ class ProcessManagement{
         bool operator()(const std::pair<int,int>& lhs, const std::pair<int,int>& rhs);
     };
     //default constructor
-    ProcessManagement();
     void setSizeOS(unsigned long long sizeOfOS);
     void refreshCurrent();
     //for SimOS getCPU
