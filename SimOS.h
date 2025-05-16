@@ -33,18 +33,19 @@ class SimOS{
     bool SimFork();
     void SimExit();
     void SimWait();
-    //void DiskReadRequest(int diskNumber, std::string fileName);
-    //void DiskJobCompleted(int diskNumber);
+    void DiskReadRequest(int diskNumber, std::string fileName);
+    void DiskJobCompleted(int diskNumber);
     int GetCPU();
     std::vector<int> GetReadyQueue();
     MemoryUse GetMemory();
-    //FileReadRequest GetDisk(int diskNumber);
-    //std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
+    FileReadRequest GetDisk(int diskNumber);
+    std::queue<FileReadRequest> GetDiskQueue(int diskNumber);
 
     //helper functions
     void printReadyQueue();
     void printMemoryLayout();
     void printMemoryHoles();
+    void printDisksAndJobs();
 
 
     private:
