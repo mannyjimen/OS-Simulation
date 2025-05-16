@@ -43,9 +43,15 @@ std::queue<FileReadRequest> Disks::getDiskJobs(int diskNum){
 }
 
 void Disks::removeDiskJobs(int PID){
-    for(std::vector<FileReadRequest> currDiskJobs: diskJobArray){
+    for(std::vector<FileReadRequest> &currDiskJobs: diskJobArray){
         for(std::vector<FileReadRequest>::iterator requestIt = currDiskJobs.begin(); requestIt != currDiskJobs.end(); requestIt++){
-            if (requestIt->PID == PID) currDiskJobs.erase(requestIt);
+            if (requestIt->PID == PID){
+                requestIt = currDiskJobs.erase(requestIt) - 1;
+            }
         }
     }
+}
+
+int Disks::getDiskCount(){
+    return diskCount_;
 }

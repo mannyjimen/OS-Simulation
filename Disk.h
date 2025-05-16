@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <queue>
+#include <string>
 
 struct FileReadRequest
 {
@@ -19,6 +20,7 @@ class Disks{
     std::queue<FileReadRequest> getDiskJobs(int diskNum);
 
     void removeDiskJobs(int PID);
+    int getDiskCount();
 
     private:
     int diskCount_;
