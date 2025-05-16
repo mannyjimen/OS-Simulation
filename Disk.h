@@ -2,6 +2,7 @@
 #define _DISK_
 
 #include <vector>
+#include <queue>
 
 struct FileReadRequest
 {
@@ -15,6 +16,7 @@ class Disks{
     void insertJob(int diskNum, FileReadRequest request);
     void finishJob(int diskNum);
     FileReadRequest getCurrentJob(int diskNum);
+    std::queue<FileReadRequest> getDiskJobs(int diskNum);
 
     private:
     int diskCount_;
