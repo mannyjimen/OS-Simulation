@@ -13,12 +13,6 @@
 #include "MemoryManagement.h"
 #include "Disk.h"
 
-struct FileReadRequest
-{
-    int PID{0};
-    std::string fileName{""};
-};
-
 struct MemoryItem
 {
     unsigned long long itemAddress;
@@ -55,7 +49,7 @@ class SimOS{
 
     private:
     ProcessManagement process_;
-    //std::unordered_map<int, std::queue<int>> disks_;
+    Disks disk_;
     MemoryManagement memory_;
     MemoryUse allMemItems_;
     

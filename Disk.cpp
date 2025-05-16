@@ -22,7 +22,10 @@ void Disks::finishJob(int diskNum){
 }
 
 FileReadRequest Disks::getCurrentJob(int diskNum){
-    if (diskNum > diskCount_) return;
+    if (diskNum > diskCount_) {
+        FileReadRequest empty;
+        return empty;
+    }
     diskNum -=1;
 
     return diskJobArray[diskNum][0];
@@ -37,4 +40,12 @@ std::queue<FileReadRequest> Disks::getDiskJobs(int diskNum){
         final.push(currentRequest);
 
     return final;
+}
+
+void Disks::removeDiskJobs(int PID){
+    for(std::vector<FileReadRequest> currDiskJobs: diskJobArray){
+        for(std::vector<FileReadRequest>::iterator requestIt = currDiskJobs.begin(); requestIt != currDiskJobs.end(); requestIt++){
+            if (requestIt->PID == PID) currDiskJobs.erase(requestIt);
+        }
+    }
 }

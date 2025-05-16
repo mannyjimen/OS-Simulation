@@ -7,6 +7,7 @@ SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM,
 
     memory_.setSizeRAM(amountOfRAM);
     NewProcess(sizeOfOS, 0);
+    disk_.setDiskCount(numberOfDisks);
     process_.setSizeOS(sizeOfOS);
 }
 //SimOS Member Functions

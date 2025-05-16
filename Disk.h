@@ -18,6 +18,8 @@ class Disks{
     FileReadRequest getCurrentJob(int diskNum);
     std::queue<FileReadRequest> getDiskJobs(int diskNum);
 
+    void removeDiskJobs(int PID);
+
     private:
     int diskCount_;
     std::vector<std::vector<FileReadRequest>> diskJobArray;
