@@ -8,8 +8,8 @@
 #include <queue>
 
 #include "Processor.h"
-#include "MemoryManagement.h"
 #include "Disk.h"
+#include "MemoryManagement.h"
 
 struct MemoryItem
 {
@@ -37,13 +37,11 @@ class SimOS{
     FileReadRequest GetDisk( int diskNumber );
     std::queue<FileReadRequest> GetDiskQueue( int diskNumber );
 
-
-    void SimExitHelper(std::vector<int> childrenToTerminate);
     //helper functions
-    void printReadyQueue();
-    void printMemoryLayout();
-    void printMemoryHoles();
-    void printDisksAndJobs();
+    // void printReadyQueue();
+    // void printMemoryLayout();
+    // void printMemoryHoles();
+    // void printDisksAndJobs();
 
 
     private:
@@ -51,7 +49,6 @@ class SimOS{
     Disks disk_;
     MemoryManagement memory_;
     MemoryUse allMemItems_;
-    
-}; 
+};  
 
 #endif //_SIM_OS_

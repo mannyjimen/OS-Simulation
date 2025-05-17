@@ -2,27 +2,27 @@
 
 void Disks::setDiskCount(int numDisks){
     diskCount_ = numDisks;
-    diskJobArray = std::vector<std::vector<FileReadRequest>>(numDisks);
+    std::vector<std::vector<FileReadRequest>> res(numDisks);
+    diskJobArray = res;
 }
 
 void Disks::insertJob(int diskNum, FileReadRequest request){
-    if (diskNum > diskCount_ || diskNum <= 0) return;
-    diskNum -= 1;
+    if (diskNum >= diskCount_ || diskNum <= 0) return;
+
+    diskNum-=1;
 
     diskJobArray[diskNum].push_back(request);
 }
 
-int Disks::finishJob(int diskNum){
-    //simulating queue pop
-    if (diskNum > diskCount_ || diskNum <= 0) return -1;
+void Disks::finishJob(int diskNum){
+    // simulating queue pop
+
+
+    if (diskNum > diskCount_ || diskNum <= 0) return;
     diskNum -= 1;
 
-    int finishedProcess{-1};
-    if (diskJobArray[diskNum].size() != 0){
-        finishedProcess = diskJobArray[diskNum][0].PID;
+    if (diskJobArray[diskNum].size() != 0)
         diskJobArray[diskNum].erase(diskJobArray[diskNum].begin());
-    }
-    return finishedProcess;
 }
 
 FileReadRequest Disks::getCurrentJob(int diskNum){
@@ -33,17 +33,27 @@ FileReadRequest Disks::getCurrentJob(int diskNum){
     diskNum -=1;
 
     return diskJobArray[diskNum][0];
+
+    // FileReadRequest fin;
+    // return fin;
 }
 
 std::queue<FileReadRequest> Disks::getDiskJobs(int diskNum){
-    if (diskNum > diskCount_ || diskNum <= 0) return {};
+    
+    std::queue<FileReadRequest> final;
+    if (diskNum > diskCount_ || diskNum <= 0){
+        return final;
+    }
     diskNum -= 1;
 
-    std::queue<FileReadRequest> final;
     for(FileReadRequest currentRequest: diskJobArray[diskNum])
         final.push(currentRequest);
-    if(final.size() >= 1) final.pop();
+
     return final;
+    
+    
+    // std::queue<FileReadRequest> fin;
+    // return fin;
 }
 
 void Disks::removeDiskJobs(int PID){
@@ -57,5 +67,6 @@ void Disks::removeDiskJobs(int PID){
 }
 
 int Disks::getDiskCount(){
+    // return 0;
     return diskCount_;
 }

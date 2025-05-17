@@ -61,14 +61,6 @@ int ProcessManagement::seeNextPID(){
     return PIDCounter + 1;
 }
 
-std::vector<int> ProcessManagement::getChildren(int PID){
-    std::vector<int> children;
-    for(int child: processMap[PID].children_)
-        children.push_back(child);
-
-    return children;
-}
-
 void ProcessManagement::addChild(int parent, int child){
     processMap[parent].children_.insert(child);
     processMap[child].parent_ = parent;
@@ -113,17 +105,4 @@ void ProcessManagement::parentUnwait(int parentPID, int childPID){
     processMap[parentPID].state_ = State::READY;
     processMap[parentPID].children_.erase(childPID);
     addProcess(parentPID, processMap[parentPID]);
-}
-
-bool ProcessManagement::waitProcess(){
-    processMap[currentProcess].state_ == State::WAITING;
-    readyQueue.pop();
-    refreshCurrent();
-    return true;
-}
-
-void ProcessManagement::unwaitProcess(int PID){
-    if (PID <= 1) return;
-    processMap[PID].state_ = State::READY;
-    addProcess(PID, processMap[PID]);
 }

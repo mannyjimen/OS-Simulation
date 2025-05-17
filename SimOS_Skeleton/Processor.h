@@ -54,14 +54,9 @@ class ProcessManagement{
     PCB getPCB(int PID);
     void addChild(int parent, int child);
 
-    std::vector<int> getChildren(int PID);
-
     //SimWait function
     bool waitParent();
     void parentUnwait(int childPID, int parentPID);
-
-    bool waitProcess();
-    void unwaitProcess(int PID);
 
     bool addProcess(int newPID, PCB newPCB);
     void exitProcess();

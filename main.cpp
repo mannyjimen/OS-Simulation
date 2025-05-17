@@ -1,4 +1,4 @@
-#include <iostream>
+// #include <iostream>
 #include "SimOS.h"
 
 
@@ -19,36 +19,33 @@ void testForkAndWait(SimOS& mainOS){
 }
 
 void testDiskManagement(SimOS& mainOS){
-    mainOS.NewProcess(100, 1); //PID 1
-    mainOS.NewProcess(200, 3); //PID 2
+    mainOS.NewProcess(100, 1); //PID 2
+    mainOS.NewProcess(200, 3); //PID 3
     
-    std::cout << "All Disk Jobs before additions\n";
     mainOS.printDisksAndJobs();
+    mainOS.printReadyQueue();
+    
+    mainOS.DiskReadRequest(2, "charlie"); //PID 3 reqs this, disk 2
+    mainOS.DiskReadRequest(1, "beta"); //PID 2 wants this disk 1
+    
+    mainOS.printDisksAndJobs();
+    mainOS.printReadyQueue();
+
+    mainOS.DiskJobCompleted(1);
     
 
-    mainOS.DiskReadRequest(2, "charlie");
-    mainOS.DiskReadRequest(1, "beta");
-    mainOS.DiskReadRequest(1, "wukong");
-    
-    std::cout << "All Disk Jobs after PID 2 insertions\n";
+    mainOS.NewProcess(300, 5); //PID 4
+    mainOS.DiskReadRequest(2, "delta"); //PID 4 reqs this on disk 2.
+    // mainOS.printDisksAndJobs();
+    // mainOS.DiskReadRequest(4, "epsilon");
+
     mainOS.printDisksAndJobs();
-    
-    mainOS.NewProcess(300, 5);
-    mainOS.SimExit();
-    mainOS.DiskReadRequest(2, "delta");
-    mainOS.DiskReadRequest(4, "epsilon");
-    std::cout << "All Disk Jobs after SimExit (erase pid2) and new requests\n";
-    mainOS.printDisksAndJobs();
+    mainOS.printReadyQueue();
     
 }
 
 int main()
 {
     SimOS mainOS(5, 5'000'000, 1'000'000); // PID 1
-    
-    // mainOS.printReadyQueue();
-    // mainOS.printMemoryLayout();
-    // mainOS.printMemoryHoles();
-    // testForkAndWait(mainOS);
     testDiskManagement(mainOS);
 }

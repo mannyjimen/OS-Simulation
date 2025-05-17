@@ -15,8 +15,7 @@ class Disks{
     public:
     void setDiskCount(int numDisks);
     void insertJob(int diskNum, FileReadRequest request);
-    //returns PID of job that was just finished.
-    int finishJob(int diskNum);
+    void finishJob(int diskNum);
     FileReadRequest getCurrentJob(int diskNum);
     std::queue<FileReadRequest> getDiskJobs(int diskNum);
 
@@ -24,8 +23,8 @@ class Disks{
     int getDiskCount();
 
     private:
-    int diskCount_;
-    std::vector<std::vector<FileReadRequest>> diskJobArray;
+    int diskCount_{0};
+    std::vector<std::vector<FileReadRequest>> diskJobArray = std::vector<std::vector<FileReadRequest>>(0);
     
 };  
 
