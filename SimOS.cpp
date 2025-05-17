@@ -2,16 +2,14 @@
 #include "SimOS.h"
 
 //SimOS constructor
-SimOS::SimOS(int numberOfDisks, unsigned long long amountOfRAM,
-    unsigned long long sizeOfOS){
-
+SimOS::SimOS( int numberOfDisks, unsigned long long amountOfRAM, unsigned long long sizeOfOS){
     memory_.setSizeRAM(amountOfRAM);
     NewProcess(sizeOfOS, 0);
     disk_.setDiskCount(numberOfDisks);
     process_.setSizeOS(sizeOfOS);
 }
 //SimOS Member Functions
-bool SimOS::NewProcess(unsigned long long size, int priority){
+bool SimOS::NewProcess( unsigned long long size, int priority ){
     unsigned long long newStartAddress = memory_.insertProcessMemory(size, process_.seeNextPID());
     if (newStartAddress == memory_.getMemorySize()){
         // std::cout << "No space for process in memory." << std::endl;
