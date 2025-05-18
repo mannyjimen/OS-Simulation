@@ -38,7 +38,7 @@ class SimOS{
     std::queue<FileReadRequest> GetDiskQueue( int diskNumber );
 
 
-    void SimExitHelper(std::vector<int> childrenToTerminate);
+    void SimExitHelper(int PID);
     //helper functions
     void printReadyQueue();
     void printMemoryLayout();

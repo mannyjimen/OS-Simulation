@@ -23,6 +23,7 @@ bool SimOS::NewProcess( unsigned long long size, int priority ){
 }
 
 bool SimOS::SimFork(){
+    if(process_.getCurrentProcess() == 1 || process_.getCurrentProcess() == -1) return false;
     PCB fork = process_.getPCB(process_.getCurrentProcess()); 
     unsigned long long newStartAddress = memory_.insertProcessMemory(fork.size_, process_.seeNextPID());
     if (newStartAddress == memory_.getMemorySize()){
@@ -42,22 +43,31 @@ void SimOS::SimExit(){
     if (process_.getCurrentProcess() == NO_PROCESS || process_.getCurrentProcess() == 1)
         return;
 
-    std::vector<int> childrenToTerminate = process_.getChildren(process_.getCurrentProcess());
-    disk_.removeDiskJobs(process_.getCurrentProcess());
-    memory_.removeProcessMemory(process_.getCurrentProcess());
-    process_.exitProcess();
-}
-
-void SimOS::SimExitHelper(std::vector<int> childrenToTerminate){
-    for(int child: childrenToTerminate){
-        std::vector<int> childrenOfChildren = process_.getChildren(child);
-        SimExitHelper(childrenOfChildren);
-        disk_.removeDiskJobs(child);
-        memory_.removeProcessMemory(child);
+    //bfs cascading termination
+    std::queue<int> terminationQueue;
+    std::unordered_set<int> seen;
+    terminationQueue.push(process_.getCurrentProcess());
+    while(!terminationQueue.empty()){
+        int curr = terminationQueue.front();
+        terminationQueue.pop();
+        seen.insert(curr);
+        for(int child: process_.getChildren(curr)){
+            if(seen.count(child)) continue;
+            terminationQueue.push(child);
+        }
+        SimExitHelper(curr);
     }
 }
 
+void SimOS::SimExitHelper(int PID){
+    std::cout << "calling SimExitHelper on PID: " << PID << std::endl;
+    process_.terminateProcess(PID);
+    disk_.removeDiskJobs(PID);
+    memory_.removeProcessMemory(PID);
+}
+
 void SimOS::SimWait(){
+    if(process_.getCurrentProcess() == 1 || process_.getCurrentProcess() == -1) return;
     process_.waitParent();
 }
 
@@ -130,6 +140,14 @@ void SimOS::printDisksAndJobs(){
     std::cout << "-------------\n";
     for(int i = 1; i <= disk_.getDiskCount(); i++){
         std::cout << "Disk " << i << " jobs: ";
+
+        FileReadRequest currentJob = disk_.getCurrentJob(i);
+        if(currentJob.PID == 0){
+            std::cout << " no jobs\n";
+            continue;
+        }
+        
+        std::cout << "Current: { PID: " << currentJob.PID << " ,Filename: " << currentJob.fileName << " } QUEUED : ";
 
         std::queue<FileReadRequest> currDiskReqs = disk_.getDiskJobs(i);
         while (!currDiskReqs.empty()){
