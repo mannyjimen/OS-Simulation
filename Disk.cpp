@@ -26,13 +26,15 @@ int Disks::finishJob(int diskNum){
 }
 
 FileReadRequest Disks::getCurrentJob(int diskNum){
+    FileReadRequest empty;
     if (diskNum > diskCount_ || diskNum <= 0) {
-        FileReadRequest empty;
         return empty;
     }
     diskNum -=1;
 
-    return diskJobArray[diskNum][0];
+    if (diskJobArray[diskNum].size() > 0)
+        return diskJobArray[diskNum][0];
+    return empty;
 }
 
 std::queue<FileReadRequest> Disks::getDiskJobs(int diskNum){
