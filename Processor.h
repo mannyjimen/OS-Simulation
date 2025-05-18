@@ -56,6 +56,7 @@ class ProcessManagement{
 
     std::vector<int> getChildren(int PID);
 
+    void terminateProcess(int PID);
     //SimWait function
     bool waitParent();
     void parentUnwait(int childPID, int parentPID);
@@ -73,6 +74,7 @@ class ProcessManagement{
 
     int currentProcess;
     int PIDCounter = 0;
+    //first in pair is PID, second is prio
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, priorityCompare> readyQueue;
     std::unordered_map<int, PCB> processMap;
 };

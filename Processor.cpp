@@ -127,3 +127,16 @@ void ProcessManagement::unwaitProcess(int PID){
     processMap[PID].state_ = State::READY;
     addProcess(PID, processMap[PID]);
 }
+
+//termination for cascading
+void ProcessManagement::terminateProcess(int PID){
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, ProcessManagement::priorityCompare> newReadyQueue;
+    while(!readyQueue.empty()){
+        std::pair<int,int> currProcess = readyQueue.top();
+        readyQueue.pop();
+        if(currProcess.first != PID){
+            newReadyQueue.push(currProcess);
+        }
+    }
+    readyQueue = newReadyQueue;
+}
