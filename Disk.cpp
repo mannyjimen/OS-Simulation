@@ -1,3 +1,4 @@
+//Manuel Jimenez
 #include "Disk.h"
 
 void Disks::setDiskCount(int numDisks){
@@ -6,16 +7,14 @@ void Disks::setDiskCount(int numDisks){
 }
 
 void Disks::insertJob(int diskNum, FileReadRequest request){
-    if (diskNum > diskCount_ || diskNum <= 0) return;
-    diskNum -= 1;
+    if (diskNum >= diskCount_ || diskNum <= 0) return;
 
     diskJobArray[diskNum].push_back(request);
 }
 
 int Disks::finishJob(int diskNum){
     //simulating queue pop
-    if (diskNum > diskCount_ || diskNum <= 0) return -1;
-    diskNum -= 1;
+    if (diskNum >= diskCount_ || diskNum <= 0) return -1;
 
     int finishedProcess{-1};
     if (diskJobArray[diskNum].size() != 0){
@@ -27,10 +26,9 @@ int Disks::finishJob(int diskNum){
 
 FileReadRequest Disks::getCurrentJob(int diskNum){
     FileReadRequest empty;
-    if (diskNum > diskCount_ || diskNum <= 0) {
+    if (diskNum >= diskCount_ || diskNum <= 0) {
         return empty;
     }
-    diskNum -=1;
 
     if (diskJobArray[diskNum].size() > 0)
         return diskJobArray[diskNum][0];
@@ -38,8 +36,7 @@ FileReadRequest Disks::getCurrentJob(int diskNum){
 }
 
 std::queue<FileReadRequest> Disks::getDiskJobs(int diskNum){
-    if (diskNum > diskCount_ || diskNum <= 0) return {};
-    diskNum -= 1;
+    if (diskNum >= diskCount_ || diskNum <= 0) return {};
 
     std::queue<FileReadRequest> final;
     for(FileReadRequest currentRequest: diskJobArray[diskNum])

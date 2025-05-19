@@ -1,3 +1,4 @@
+//Manuel Jimenez
 #ifndef _DISK_
 #define _DISK_
 
