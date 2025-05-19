@@ -1,4 +1,6 @@
+//Manuel Jimenez
 #include "Processor.h"
+
 //PCB Default Constructor
 PCB::PCB(){
     state_ = State::NEW;
@@ -29,6 +31,8 @@ bool ProcessManagement::priorityCompare::operator()(
     const std::pair<int,int>& lhs, 
     const std::pair<int,int>& rhs)
 {
+    if(rhs.second == lhs.second)
+        return rhs.first < lhs.first;
     return rhs.second > lhs.second;
 }
 
@@ -83,17 +87,21 @@ bool ProcessManagement::addProcess(int newPID, PCB newPCB){
     return true;
 }
 
+void ProcessManagement::reviveProcess(int PID){
+    readyQueue.push({PID, processMap[PID].priority_});
+}
+
 void ProcessManagement::exitProcess(){
     processMap[currentProcess].state_ = State::TERMINATED;
+    readyQueue.pop();
     if (checkForWaitingParent(currentProcess)){
         parentUnwait(processMap[currentProcess].parent_, currentProcess);
     }
-    readyQueue.pop();
     refreshCurrent();
 }
 
 bool ProcessManagement::checkForWaitingParent(int childPID){
-    if (processMap[childPID].parent_ != -1 && processMap[processMap[childPID].parent_].state_ == State::WAITING){
+    if (waitingParents.count(processMap[currentProcess].parent_)){
         return true;
     }
     return false;
@@ -103,16 +111,24 @@ bool ProcessManagement::waitParent(){
     //wait parent IF it has at least 1 child
     if (processMap[currentProcess].children_.size() == 0)
         return false;
+    //in case parent has a terminated child it can use
+    for(auto x: processMap[currentProcess].children_){
+        if (processMap[x].state_ == State::TERMINATED){
+            processMap[currentProcess].children_.erase(x);
+            return false;
+        }
+    }
     processMap[currentProcess].state_ = State::WAITING;
+    waitingParents.insert(currentProcess);
     readyQueue.pop();
     refreshCurrent();
     return true;
 }
 
 void ProcessManagement::parentUnwait(int parentPID, int childPID){
-    processMap[parentPID].state_ = State::READY;
+    reviveProcess(parentPID);
     processMap[parentPID].children_.erase(childPID);
-    addProcess(parentPID, processMap[parentPID]);
+    waitingParents.erase(parentPID);
 }
 
 bool ProcessManagement::waitProcess(){
@@ -138,5 +154,6 @@ void ProcessManagement::terminateProcess(int PID){
             newReadyQueue.push(currProcess);
         }
     }
+    processMap[PID].state_ = State::TERMINATED;
     readyQueue = newReadyQueue;
 }

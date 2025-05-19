@@ -1,3 +1,4 @@
+//Manuel Jimenez
 #include "MemoryManagement.h"
 
 void MemoryManagement::setSizeRAM(unsigned long long size){

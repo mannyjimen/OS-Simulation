@@ -47,6 +47,7 @@ void SimOS::SimExit(){
     std::queue<int> terminationQueue;
     std::unordered_set<int> seen;
     terminationQueue.push(process_.getCurrentProcess());
+    process_.exitProcess();
     while(!terminationQueue.empty()){
         int curr = terminationQueue.front();
         terminationQueue.pop();
@@ -57,10 +58,10 @@ void SimOS::SimExit(){
         }
         SimExitHelper(curr);
     }
+
 }
 
 void SimOS::SimExitHelper(int PID){
-    std::cout << "calling SimExitHelper on PID: " << PID << std::endl;
     process_.terminateProcess(PID);
     disk_.removeDiskJobs(PID);
     memory_.removeProcessMemory(PID);
@@ -91,13 +92,14 @@ MemoryUse SimOS::GetMemory(){
 //DISK FUNCTIONS
 
 void SimOS::DiskReadRequest(int diskNumber, std::string fileName){
-    if (process_.getCurrentProcess() == 1) return;
+    if (process_.getCurrentProcess() == 1 || diskNumber >= disk_.getDiskCount()) return;
     FileReadRequest newRequest{GetCPU(), fileName};
     process_.waitProcess();
     disk_.insertJob(diskNumber, newRequest);
 }
 
 void SimOS::DiskJobCompleted(int diskNumber){
+    if (process_.getCurrentProcess() == 1 || diskNumber >= disk_.getDiskCount()) return;
     int finishedProcess = disk_.finishJob(diskNumber);
     process_.unwaitProcess(finishedProcess);
 }
@@ -138,7 +140,7 @@ void SimOS::printMemoryHoles(){
 
 void SimOS::printDisksAndJobs(){
     std::cout << "-------------\n";
-    for(int i = 1; i <= disk_.getDiskCount(); i++){
+    for(int i = 0; i < disk_.getDiskCount(); i++){
         std::cout << "Disk " << i << " jobs: ";
 
         FileReadRequest currentJob = disk_.getCurrentJob(i);

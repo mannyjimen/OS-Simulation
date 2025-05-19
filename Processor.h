@@ -1,3 +1,4 @@
+//Manuel Jimenez
 #ifndef _PROCESSOR_
 #define _PROCESSOR_
 
@@ -47,7 +48,7 @@ class ProcessManagement{
     int getCurrentProcess();
     //for SimOS GetReadyQueue
     std::vector<int> fetchReadyQueue();
-    //adding process to readyQueue
+    //adding process to ready Queue
     int getNextPID();
     int seeNextPID();
     
@@ -58,6 +59,7 @@ class ProcessManagement{
 
     void terminateProcess(int PID);
     //SimWait function
+    void reviveProcess(int PID);
     bool waitParent();
     void parentUnwait(int childPID, int parentPID);
 
@@ -77,6 +79,8 @@ class ProcessManagement{
     //first in pair is PID, second is prio
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, priorityCompare> readyQueue;
     std::unordered_map<int, PCB> processMap;
+
+    std::unordered_set<int> waitingParents; 
 };
 
 #endif //_PROCESSOR_
